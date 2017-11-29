@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "df_train <- read_delim(\"~/Documents/BD/Assignment2/BreastCancerDataTrain.txt\", \" \", escape_double = FALSE, trim_ws = TRUE)\n\ndf_train$dummy <- as.numeric(df_train$Diagnosis == \"M\") # Malignt = 1\ndf_train <- df_train[,-1]\nPC <- prcomp(t(df_train))\nfor (int in c(1,2,3,4,5,6,7,8,9,10,11)){\n  varName <- paste(\"PC_\", int, sep = \"\")\n  assign(varName, PC$x[,int])\n}",
+    "created" : 1511873489956.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1577800097",
+    "id" : "9FD09EAC",
+    "lastKnownWriteTime" : 1511875372,
+    "last_content_update" : 1511875372662,
+    "path" : "~/Documents/BD/Assignment2/Exercise_2_task_1.R",
+    "project_path" : "Exercise_2_task_1.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

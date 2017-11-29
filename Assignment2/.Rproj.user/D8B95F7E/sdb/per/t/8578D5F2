@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "summary(m)\n\ntable(data)\nView(spam)\ntable(data$\"genotype\")\ntable(data$type)",
+    "created" : 1511872287865.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3326975387",
+    "id" : "8578D5F2",
+    "lastKnownWriteTime" : 1511872330,
+    "last_content_update" : 1511872330706,
+    "path" : "~/Documents/BD/Assignment2/memo.R",
+    "project_path" : "memo.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

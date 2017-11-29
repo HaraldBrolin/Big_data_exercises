@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "set.seed(201606)\nN <- 20\nx1 <- runif(N,-1,1)\nx2 <- runif(N,-1,1)\nX <- cbind(x1,x2)\ny <- ifelse(x2>x1,-1,1)",
+    "created" : 1511871333214.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "376579190",
+    "id" : "D7DE5CC1",
+    "lastKnownWriteTime" : 1511871263,
+    "last_content_update" : 1511871263,
+    "path" : "~/Documents/BD/Assignment2/DataGeneration.R",
+    "project_path" : "DataGeneration.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

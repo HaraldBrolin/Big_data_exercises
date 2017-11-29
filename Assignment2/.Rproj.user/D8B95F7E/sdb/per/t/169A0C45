@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#--------------------------------#\n#--- Demo of package 'glmnet' ---#\n#------ Xijia Liu 2017 Nov ------#\n#--------------------------------#\n\nlibrary(glmnet); \n\n# the library for data and 'confusion matrix'\nlibrary(MASS); library(kernlab); library(caret)\n\n\n# Main function in 'glment'\n\n## ?glmnet\n## ?cv.glmnet\n\n# 1) regression + panelty\n\ndata <- Boston\ndim(data)\nhead(data)\n\n## try linear regression\n\nm <- lm(medv~., data = data)\nsummary(m)\n\n## Split data\n\nset.seed(201711)\n\nid_train <- sample(1:dim(data)[1], dim(data)[1]*0.8)\ndata_train <- data[id_train, ]\ndata_test <- data[-id_train, ]\n\n## fit a lasso\n\nmodel_0 <- glmnet(x = as.matrix(data_train[,-14]), \n                  y = data_train$medv,\n                  family = \"gaussian\",\n                  alpha = 1,\n                  lambda = 1)\n\ncoef(model_0)\n\n## cross validation \n\nmodel_1 <- cv.glmnet(x = as.matrix(data_train[,-14]), \n                     y = data_train$medv,\n                     family = \"gaussian\",\n                     alpha = 1,\n                     #lambda = shrink_par,\n                     #nfolds = dim(data_train)[1]\n                     nfolds = 10)\n\nplot(model_1)\n\nmodel_1$lambda\nmodel_1$lambda.min\ncoef(model_1, s = \"lambda.min\")\n\n# 2) Classification, logistic regression with panelty\n\ndata(spam); data <- spam\nhead(data)\ndim(data)\n\nid <- sample(1:dim(data)[1], 100)\npairs(data[id,1:10], col=data$type[id])\n\n## split data \n\nset.seed(2017)\nid_train <- sample(1:dim(data)[1], 0.7*dim(data)[1])\ndata_train <- data[id_train, ]\ndata_test <- data[-id_train, ]\n\nmodel_1 <- cv.glmnet(x = as.matrix(data_train[, 1:57]),\n                     y = data_train$type,\n                     family = \"binomial\",\n                     type.measure = \"class\",\n                     nfolds = 10)\n\nplot(model_1)\npre_res <- predict(model_1, as.matrix(data_test[,-58]), s = \"lambda.min\", type = \"class\")\nconfusionMatrix(pre_res, data_test$type)\n",
+    "created" : 1511871385928.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "843690780",
+    "id" : "169A0C45",
+    "lastKnownWriteTime" : 1511873224,
+    "last_content_update" : 1511873224975,
+    "path" : "~/Documents/BD/Assignment2/glmnet.R",
+    "project_path" : "glmnet.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
