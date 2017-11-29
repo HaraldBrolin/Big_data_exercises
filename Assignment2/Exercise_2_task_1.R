@@ -38,5 +38,8 @@ pre_res <- predict(lr_model, as.matrix(df_test[, -1]), s = "lambda.min", type = 
 confusionMatrix(pre_res, df_test$Diagnosis)
 
 #--------------------------------------
+# Task 4 
+# KKN
 
-
+#knn_model <- knn3(df_train$Diagnosis ~ ., df_train, k = 5)
+knn3Train(df_train, df_test, df_train$Diagnosis, k = 5, l = 0, prob = TRUE, use.all = TRUE)
