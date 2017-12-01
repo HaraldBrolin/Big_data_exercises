@@ -61,6 +61,8 @@ coef(model_1, s = "lambda.min")
 
 # 2) Classification, logistic regression with panelty
 
+
+
 data(spam); data <- spam
 head(data)
 dim(data)
