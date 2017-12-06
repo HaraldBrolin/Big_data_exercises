@@ -21,6 +21,11 @@ df_PC <-  as.data.frame(PC$x[,1:20])
 df_PC <- cbind(df_PC,MetaData$SubType)
 names(df_PC)[ncol(df_PC)] <- "Subtype"
 df_PC$Subtype <- as.numeric(df_PC$Subtype == "IDHmut-codel") #Codel = 1
+PC_nam <- names(df_PC)
+
+df_PC <- sample(df_PC)
+df_PC <- sample(df_PC)
+df_PC <- sample(df_PC)
 
 df_test <- sample(nrow(df_PC), nrow(df_PC) * 0.2) # Selscts 20% as test data
 df_train <- df_PC[-df_test,]
@@ -28,59 +33,53 @@ df_test <- df_PC[df_test,]
 
 
 #--------------- Create the logistic regression
-for (k in 0:17){
-  temp_df_test <- df_train[(k*10)+(1:10),]
-  temp_df_train <- df_train[-((k*10)+(1:10)),]
-  log_model <-  glm(Subtype ~ temp_df_train$PC1, family = binomial("logit"), temp_df_train)
-  pre_log <- predict(log_model, as.data.frame(temp_df_test[,-21]), type = "response")
-  confusionMatrix(pre_res, data_test$type)
-  
-  
-}
-log_model <-  glm(Subtype ~ df_train$PC1, family = binomial("logit"), df_train)
-print(log_model)
-for (k in 3:21){
-  log_model <-  glm(Subtype ~ df_train[,2:k], family = binomial("logit"), df_train)
-  print(log_model)
-
-
+pred_tot <- data.frame()
+for (i in 1:20){
+  comps <- paste(PC_nam[1:i], sep="", collapse = "+")
+  pred_df <- data.frame()
+  for (k in 0:17){
+    temp_df_test <- df_train[(k*10)+(1:10),]
+    temp_df_train <- df_train[-((k*10)+(1:10)),]
+    log_model <-  glm(as.formula(paste(c("Subtype ~ ", comps ), sep = "", collapse = "")), family = binomial("logit"), temp_df_train)
+    pre_log <- predict(log_model, temp_df_test, type = "response")
+    conf_df <- t(as.data.frame(confusionMatrix(round(pre_log, 0), temp_df_test$Subtype)[3]))
+    pred_df <- rbind(pred_df, conf_df)
+  }
+  pred_tot <- rbind(pred_tot, t(as.data.frame(colMeans(pred_df, na.rm = FALSE))))
+  #print(colMeans(pred_df, na.rm = TRUE))
 }
 
 
+log_model <-  glm(as.formula("Subtype ~ PC1 + PC2"), family = binomial("logit"), df_train) # Chose using two PC components
+pre_log <- predict(log_model, df_test, type = "response")
+confusionMatrix(round(pre_log, 0), df_test$Subtype) # The result
+
+#------------------------ penalized logistic regression 
+#glmnet(df_PC[,-(which(colnames(df_PC)=="Subtype"))], df_PC$Subtype, family = binomial("logit"))
 
 
-#--------------- Create the logistic regression
-
-lg_model <- cv.glmnet(x = as.matrix(df_train[, -1]),
-                     y = df_train$Subtype,
-                     family = "binomial",
-                     type.measure = "class",
-                     nfolds = 10)
-plot(lg_model)
-pre_res <- predict(lg_model, as.matrix(df_test[,-1]), s = "lambda.min", type = "class")
-ans <- confusionMatrix(pre_res, df_test$Subtype)
 
 
-#----------------- Nu anv?nder jag minst two komponenter
-for (k in 2:20){
-  lg_model <- cv.glmnet(x = as.matrix((df_train[-1])[1:k]),
-                        y = df_train$Subtype,
-                        family = "binomial",
-                        type.measure = "class",
-                        nfolds = 10)
-  pre_res <- predict(lg_model, as.matrix((df_test[-1])[1:k]), s = "lambda.min", type = "class")
-  ans <- confusionMatrix(pre_res, df_test$Subtype)
-  cat("Number of PC:", k, "\n")
-  print(ans$overall)
-}
+lgp_model <- glmnet(x = as.matrix(df_train[,-(which(colnames(df_PC)=="Subtype"))]),
+                      y = as.matrix(df_train$Subtype),
+                      family = "binomial")                                      
 
-#------------------ Apply to test set (best 2?)
-lg_model <- cv.glmnet(x = as.vector((df_train[-1])[1:2]),
-                      y = df_train$Subtype,
+
+pre_lgp <- predict(lg_model, as.matrix(df_test[,-(which(colnames(df_PC)=="Subtype"))]), s = 0.1, type = "class")
+confusionMatrix(pre_lgp, df_test$Subtype)
+
+opt_lamb <- cv.glmnet(x = as.matrix(df_train[,-(which(colnames(df_PC)=="Subtype"))]),
+                      y = as.matrix(df_train$Subtype),
                       family = "binomial",
                       type.measure = "class",
                       nfolds = 10)
-pre_res <- predict(lg_model, as.vector((df_test[-1])[1:2]), s = "lambda.min", type = "class")
+
+pre_lg_opt <- predict(opt_lamb, as.matrix(df_test[,-(which(colnames(df_PC)=="Subtype"))]), s = "lambda.min", type = "class")
+confusionMatrix(pre_lg_opt, df_test$Subtype)
+
+
+
+
 
 
 
