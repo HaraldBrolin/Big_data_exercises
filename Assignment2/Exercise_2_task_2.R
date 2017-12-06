@@ -27,7 +27,7 @@ df_PC <- sample(df_PC)
 df_PC <- sample(df_PC)
 df_PC <- sample(df_PC)
 
-df_test <- sample(nrow(df_PC), nrow(df_PC) * 0.2) # Selscts 20% as test data
+df_test <- sample(nrow(df_PC), nrow(df_PC) * 0.2) # Selects 20% as test data
 df_train <- df_PC[-df_test,]
 df_test <- df_PC[df_test,]
 
@@ -55,19 +55,15 @@ pre_log <- predict(log_model, df_test, type = "response")
 confusionMatrix(round(pre_log, 0), df_test$Subtype) # The result
 
 #------------------------ penalized logistic regression 
-#glmnet(df_PC[,-(which(colnames(df_PC)=="Subtype"))], df_PC$Subtype, family = binomial("logit"))
-
-
-
-
+# alpha default is LASSO
 lgp_model <- glmnet(x = as.matrix(df_train[,-(which(colnames(df_PC)=="Subtype"))]),
                       y = as.matrix(df_train$Subtype),
                       family = "binomial")                                      
 
-
 pre_lgp <- predict(lg_model, as.matrix(df_test[,-(which(colnames(df_PC)=="Subtype"))]), s = 0.1, type = "class")
 confusionMatrix(pre_lgp, df_test$Subtype)
 
+#------------------------ Crossvalidation to fond best lambda
 opt_lamb <- cv.glmnet(x = as.matrix(df_train[,-(which(colnames(df_PC)=="Subtype"))]),
                       y = as.matrix(df_train$Subtype),
                       family = "binomial",
@@ -77,9 +73,40 @@ opt_lamb <- cv.glmnet(x = as.matrix(df_train[,-(which(colnames(df_PC)=="Subtype"
 pre_lg_opt <- predict(opt_lamb, as.matrix(df_test[,-(which(colnames(df_PC)=="Subtype"))]), s = "lambda.min", type = "class")
 confusionMatrix(pre_lg_opt, df_test$Subtype)
 
+#----------------------- Use best lambda to create optimal model
+lgp_model_optlambda <- glmnet(x = as.matrix(df_train[,-(which(colnames(df_PC)=="Subtype"))]),
+                              y = as.matrix(df_train$Subtype),
+                              family = "binomial") 
+
+pre_lgp_model_optlambda <- predict(lgp_model_optlambda, as.matrix(df_test[,-(which(colnames(df_PC)=="Subtype"))]), s = opt_lamb$lambda.min, type = "class")
+confusionMatrix(pre_lgp, df_test$Subtype)
 
 
+#------------------------------------------------------------
+#---------------------Task 2.3
+#-----------------------Create a training and a test-set
+df_tot <- as.data.frame(t(GeneExpressionData))
+df_tot$Subtype <- MetaData$SubType
+
+sample(df_tot)
+sample(df_tot)
+sample(df_tot)
+df_test <- sample(nrow(df_tot), nrow(df_tot) * 0.2)
+df_train <- df_tot[-df_test,]
+df_test <- df_tot[df_test,]
 
 
+#----------------------- Use best lambda to create optimal model
+opt_lamb <- cv.glmnet(x = as.matrix(df_train[,-(which(colnames(df_tot)=="Subtype"))]),
+                      y = as.matrix(df_train$Subtype),
+                      family = "binomial",
+                      type.measure = "class",
+                      nfolds = 10)
 
+pre_lg_opt <- predict(opt_lamb, as.matrix(df_test[,-(which(colnames(df_tot)=="Subtype"))]), s = "lambda.min", type = "class")
+confusionMatrix(pre_lg_opt, df_test$Subtype)
+which (coef(opt_lamb, s="lambda.min") != 0 ) # fetch indecies of the non-zero genes
+coef(opt_lamb, s="lambda.min")[which (coef(opt_lamb, s="lambda.min") != 0 )] # gets the values
+
+#------------------ Måste få ut rätt gener
 
