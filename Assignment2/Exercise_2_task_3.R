@@ -41,7 +41,11 @@ perceptron = function(x, y, learning.rate=1) {
         k <- k+1
         made.mistake=TRUE
         }
-      } }
+    } 
+    intercept <- - b / w[[2]]
+    slope <-  - w[[1]] /w[[2]]
+    abline(intercept,slope,col="green")
+    }
   s = euclidean.norm(w)
   return(list(w=w/s,b=b/s,updates=k))
   }
@@ -49,5 +53,5 @@ perceptron = function(x, y, learning.rate=1) {
 p <- perceptron(x, Y)
 intercept <- - p$b / p$w[[2]]
 
-slope <- - p$w[[1]] /p$ w[[2]]
+slope <-  - p$w[[1]] /p$w[[2]]
 abline(intercept,slope,col="green")
