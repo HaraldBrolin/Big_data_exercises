@@ -89,5 +89,132 @@ Prediction   0   1
        'Positive' Class : 0  
 
 
+--------------------------- Task 5
+LDA validation
+
+Validates by training on the train_set and then predicting the test_set
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 57  3
+         1  1 32
+                                          
+               Accuracy : 0.957           
+                 95% CI : (0.8935, 0.9882)
+    No Information Rate : 0.6237          
+    P-Value [Acc > NIR] : 3.551e-14       
+                                          
+                  Kappa : 0.9073          
+ Mcnemar's Test P-Value : 0.6171          
+                                          
+            Sensitivity : 0.9828          
+            Specificity : 0.9143          
+         Pos Pred Value : 0.9500          
+         Neg Pred Value : 0.9697          
+             Prevalence : 0.6237          
+         Detection Rate : 0.6129          
+   Detection Prevalence : 0.6452          
+      Balanced Accuracy : 0.9485          
+                                          
+       'Positive' Class : 0 
+
+------------------------------------------
+Validation logistic regression, by cross validation so select optimal lambda (s = 0.0002700994)
+
+confusionMatrix(pre_lg_opt, df_test$Diagnosis)
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 58  4
+         1  0 31
+                                          
+               Accuracy : 0.957           
+                 95% CI : (0.8935, 0.9882)
+    No Information Rate : 0.6237          
+    P-Value [Acc > NIR] : 3.551e-14       
+                                          
+                  Kappa : 0.9063          
+ Mcnemar's Test P-Value : 0.1336          
+                                          
+            Sensitivity : 1.0000          
+            Specificity : 0.8857          
+         Pos Pred Value : 0.9355          
+         Neg Pred Value : 1.0000          
+             Prevalence : 0.6237          
+         Detection Rate : 0.6237          
+   Detection Prevalence : 0.6667          
+      Balanced Accuracy : 0.9429          
+                                          
+       'Positive' Class : 0               
+                            
+--------------------------------------
+
+KNN hyper paramter, using training and test set of the BreasCancerDataB
+[1] 4
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 56  6
+         1  2 29
+                                          
+               Accuracy : 0.914           
+                 95% CI : (0.8375, 0.9621)
+    No Information Rate : 0.6237          
+    P-Value [Acc > NIR] : 1.794e-10       
+                                          
+                  Kappa : 0.8125          
+ Mcnemar's Test P-Value : 0.2888          
+                                          
+            Sensitivity : 0.9655          
+            Specificity : 0.8286          
+         Pos Pred Value : 0.9032          
+         Neg Pred Value : 0.9355          
+             Prevalence : 0.6237          
+         Detection Rate : 0.6022          
+   Detection Prevalence : 0.6667          
+      Balanced Accuracy : 0.8970          
+                                          
+       'Positive' Class : 0  
+
+
+
+FINAL RESULTS, USING THE LDA
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 57  5
+         1  2 36
+                                          
+               Accuracy : 0.93            
+                 95% CI : (0.8611, 0.9714)
+    No Information Rate : 0.59            
+    P-Value [Acc > NIR] : 1.704e-14       
+                                          
+                  Kappa : 0.8537          
+ Mcnemar's Test P-Value : 0.4497          
+                                          
+            Sensitivity : 0.9661          
+            Specificity : 0.8780          
+         Pos Pred Value : 0.9194          
+         Neg Pred Value : 0.9474          
+             Prevalence : 0.5900          
+         Detection Rate : 0.5700          
+   Detection Prevalence : 0.6200          
+      Balanced Accuracy : 0.9221          
+                                          
+       'Positive' Class : 0
+
+
+
+
+
+
+
 
 
