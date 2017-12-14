@@ -24,14 +24,14 @@ ctrl <- trainControl(method = "repeatedcv",
                      search = "random", 
                      classProbs = T)
 
-M_svm <- train(make.names(V1) ~.,
+model_svm <- train(make.names(V1) ~.,
                data = train_data,
                method = "svmLinear",
                metric = "Accuracy",
                trControl = ctrl)
-M_svm
+model_svm
 
-#----------Gaussian Process with polynomial Kernel--------- DONE!
+#----------Gaussian Process with polynomial Kernel---------
 
 ctrl <- trainControl(method = "repeatedcv",
                      repeats = 1,
@@ -39,12 +39,31 @@ ctrl <- trainControl(method = "repeatedcv",
                      search = "random", 
                      classProbs = T)
 
-M_svm <- train(make.names(V1) ~.,
+model_gaussprPoly <- train(make.names(V1) ~.,
                data = train_data,
                method = "gaussprPoly",
                metric = "Accuracy",
                trControl = ctrl)
-M_svm
+
+model_gaussprPoly
+
+#----------Grided Gaussian Process with polynomial Kernel---------
+
+grid <- expand.grid(degree = c(1,3), scale = c(1.542958e-03, 2.5e-04, 3.4e-05))
+
+ctrl <- trainControl(method = "repeatedcv",
+                     repeats = 1,
+                     number = 10,
+                     search = "random", 
+                     classProbs = T)
+
+model_gaussprPoly <- caret::train(make.names(V1) ~.,
+                           data = train_data,
+                           method = "gaussprPoly",
+                           tuneGrid = grid,
+                           trControl = ctrl)
+
+model_gaussprPoly
 
 #----------Multilayer Perceptron-----
 
@@ -54,12 +73,48 @@ ctrl <- trainControl(method = "repeatedcv",
                      search = "random", 
                      classProbs = T)
 
-M_svm_1 <- train(y = make.names(data_train$V1),
-                 x = data_train[,-1],
+model_mlp <- train(y = make.names(train_data$V1),
+                 x = train_data[,-1],
                  method = "mlp",
                  metric = "Accuracy",
                  trControl = ctrl)
-M_svm_1
+model_mlp
+
+
+#----------Grided Multilayer Perceptron-------
+
+grid <- expand.grid(size = c(18,20,21))
+
+ctrl <- trainControl(method = "repeatedcv",
+                     repeats = 1,
+                     number = 10,
+                     search = "random", 
+                     classProbs = T)
+
+model_mlp_grid <- train(y = make.names(train_data$V1),
+                   x = train_data[,-1],
+                   method = "mlp",
+                   tuneGrid = grid,
+                   trControl = ctrl)
+model_mlp_grid
+
+#----------Grided boot Multilayer Perceptron-------
+
+grid <- expand.grid(size = c(18,20,21))
+
+ctrl <- trainControl(method = "boot",
+                     repeats = 1,
+                     number = 10,
+                     search = "random", 
+                     classProbs = T)
+
+model_mlp_grid <- train(y = make.names(train_data$V1),
+                        x = train_data[,-1],
+                        method = "mlp",
+                        tuneGrid = grid,
+                        trControl = ctrl)
+model_mlp_grid
+
 
 
 #----------Oblique Random Forest-----BROKE!
@@ -70,18 +125,64 @@ ctrl <- trainControl(method = "repeatedcv",
                      search = "random", 
                      classProbs = T)
 
-oblique_RF <- train(make.names(V1) ~.,
+model_ORFlog <- train(make.names(V1) ~.,
                  data = train_data,
                  method = "ORFlog",
                  metric = "Accuracy",
                  trControl = ctrl)
-M_svm_1
+model_ORFlog
+
+#----------Multilayer Perceptron with weight decay-----
+
+ctrl <- trainControl(method = "repeatedcv",
+                     repeats = 1,
+                     number = 10,
+                     search = "random", 
+                     classProbs = T)
+
+model_mlpWeightDecay <- caret::train(y = make.names(train_data$V1),
+                 x = train_data[,-1],
+                 method = "mlpWeightDecay",
+                 metric = "Accuracy",
+                 trControl = ctrl)
+
+model_mlpWeightDecay
+
+
+#----------Grided Multilayer Perceptron with weight decay-----
+
+grid <- expand.grid(size = c(16,17,18), decay = c(0.000002321, 0.000004643))
+
+ctrl <- trainControl(method = "repeatedcv",
+                     repeats = 1, 
+                     number = 10,
+                     search = "random", 
+                     classProbs = T)
+
+model_mlpWeightDecay_grid <- caret::train(y = make.names(train_data$V1),
+                      x = train_data[,-1],
+                      method = "mlpWeightDecay",
+                      tuneGrid = grid,
+                      trControl = ctrl)
+
+model_mlpWeightDecay_grid
+
+
+#----------Naive Bayes-----
+
+ctrl <- trainControl(method = "repeatedcv",
+                     repeats = 1,
+                     number = 10,
+                     search = "random", 
+                     classProbs = T)
+
+model_naive_bayes <- caret::train(y = make.names(train_data$V1),
+                                     x = train_data[,-1],
+                                     method = "naive_bayes",
+                                     metric = "Accuracy",
+                                     trControl = ctrl)
+
+model_naive_bayes
 
 
 
-library(tensorflow)
-install_tensorflow()
-
-sess = tf$Session()
-hello <- tf$constant('Hello, TensorFlow!')
-sess$run(hello)
