@@ -1,0 +1,8 @@
+E3_model_prediction.R
+
+-The hand in r code, loads Xijias test data and runs predics and confusion matrix
+
+
+Model_mlp_25_final.RData
+
+-final version of the mlp model, workspace is only the modelwith the name "model_mlp_25" trained on 7298
